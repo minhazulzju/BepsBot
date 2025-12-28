@@ -1,65 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BepsBot System Presentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <h1>BepsBot: AI-Powered Peer Support Writing Assistant</h1>
         <nav>
-                <a href="#problem">Problem</a>
-                <a href="#overview">Overview</a>
-                <a href="#architecture">System Architecture</a>
-                <a href="#features">Features & Tech Stack</a>
-                <a href="#results">Results & Impact</a>
-                <a href="#contact">Contact</a>
+            <a href="#problem">Problem</a>
+            <a href="#overview">Overview</a>
+            <a href="#architecture">System Architecture</a>
+            <a href="#features">Features & Tech Stack</a>
+            <a href="#results">Results & Impact</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
-        <main>
-            <section id="problem">
-                <h2>Problem & Motivation</h2>
-                <p>
-                    <b>Online mental health communities (OMHCs)</b> are vital spaces for peer support, but users often struggle to write comments that are both empathetic and informative. Many comments lack either emotional support (ES) or informational support (IS), and users may feel uncertain about the quality or helpfulness of their responses. Traditional writing assistance tools are not tailored for the sensitive, high-stakes context of mental health support, and can frustrate users or lead to insincere, repetitive, or even risky content. There is a clear need for intelligent, context-aware tools that can guide users to compose high-quality, safe, and supportive comments in real time.
-                </p>
-            </section>
-            <section id="overview">
-                <h2>Solution: BepsBot Overview</h2>
-                <p>BepsBot is a modular AI system leveraging large language models (LLMs), vector databases, and advanced NLP pipelines to assist users in composing high-quality, supportive comments in online mental health communities. The system integrates Retrieval-Augmented Generation (RAG), prompt engineering, and fine-tuned models for real-time feedback and recommendations.</p>
-            </section>
+    <main>
+        <section id="problem">
+            <h2>Problem & Motivation</h2>
+            <p>
+                <b>Online mental health communities (OMHCs)</b> are vital spaces for peer support, but users often
+                struggle to write comments that are both empathetic and informative. Many comments lack either emotional
+                support (ES) or informational support (IS), and users may feel uncertain about the quality or
+                helpfulness of their responses. Traditional writing assistance tools are not tailored for the sensitive,
+                high-stakes context of mental health support, and can frustrate users or lead to insincere, repetitive,
+                or even risky content. There is a clear need for intelligent, context-aware tools that can guide users
+                to compose high-quality, safe, and supportive comments in real time.
+            </p>
+        </section>
+        <section id="overview">
+            <h2>Solution: BepsBot Overview</h2>
+            <p>BepsBot is a modular AI system leveraging large language models (LLMs), vector databases, and advanced
+                NLP pipelines to assist users in composing high-quality, supportive comments in online mental health
+                communities. The system integrates Retrieval-Augmented Generation (RAG), prompt engineering, and
+                fine-tuned models for real-time feedback and recommendations.</p>
+        </section>
         <section id="architecture">
-                <h2>System Architecture</h2>
-                <div class="diagram">
-                    <img src="architecture1.png" alt="RAG Pipeline Diagram" style="max-width:100%;height:auto;">
-                </div>
-                <div class="diagram">
-                    <img src="architecture2.png" alt="Data Pipeline Diagram" style="max-width:100%;height:auto;">
-                </div>
-                <div class="diagram">
-                    <img src="architecture3.png" alt="System Data Flow Diagram" style="max-width:100%;height:auto;">
-                </div>
-                <h3>Technical Details</h3>
-                <ul>
-                    <li><b>LLM Integration & Orchestration:</b> Modular backend supports both local and API-based LLMs (OpenAI, HuggingFace Transformers). LLMs are used for content generation, scoring, and safety filtering. The system is designed for easy swapping and fine-tuning of models for specific tasks.</li>
-                    <li><b>Retrieval-Augmented Generation (RAG) Pipeline:</b> User queries are embedded using Sentence Transformers (MiniLM, RoBERTa). Embeddings are stored and searched in ChromaDB, a high-performance vector database. Top-K relevant responses are retrieved and injected as context for LLM-based generation, enabling context-aware, high-recall outputs.</li>
-                    <li><b>Why ChromaDB?</b> ChromaDB was selected for its sub-millisecond retrieval speed, enabling real-time, low-latency semantic search crucial for user-facing applications. Through careful index tuning and hardware optimization, we reduced end-to-end retrieval latency by 65%, ensuring seamless user experience even at scale.</li>
-                    <li><b>Prompt Engineering:</b> Dynamic prompt templates are constructed based on user intent (assessment vs. recommendation). Prompts include retrieved examples, safety instructions, and user context to guide LLM output and minimize hallucination.</li>
-                    <li><b>Model Training & Fine-Tuning:</b> IS/ES classifiers are trained on annotated Reddit data using Random Forest, XGBoost, and fine-tuned RoBERTa. LLMs are further fine-tuned on domain-specific support conversations, with custom heads for regression/classification. Evaluation includes cross-validation, F1/accuracy metrics, and human-in-the-loop validation.</li>
-                    <li><b>Active Learning Loop:</b> User interactions are logged and periodically used to retrain models, improving performance and domain adaptation. The pipeline supports continuous deployment and model versioning.</li>
-                    <li><b>Engineering Best Practices:</b> RESTful API endpoints (FastAPI), containerized deployment (Docker), robust monitoring/logging, and modular codebase for scalability and maintainability.</li>
-                    <li><b>Safety & Hallucination Filtering:</b> LLM-based and rule-based filters ensure outputs are safe, relevant, and non-harmful, with additional checks for privacy and content quality.</li>
-                </ul>
-                <p><b>Key components:</b> Flask frontend, FastAPI backend, ChromaDB vector search, LLM orchestration, safety filtering, and active learning loop.</p>
+            <h2>System Architecture</h2>
+            <div class="diagram">
+                <img src="architecture1.png" alt="RAG Pipeline Diagram" style="max-width:100%;height:auto;">
+            </div>
+            <div class="diagram">
+                <img src="architecture2.png" alt="Data Pipeline Diagram" style="max-width:100%;height:auto;">
+            </div>
+            <div class="diagram">
+                <img src="architecture3.png" alt="System Data Flow Diagram" style="max-width:100%;height:auto;">
+            </div>
+            <h3>Technical Details</h3>
+            <p><b>Why use RAG?</b> RAG (Retrieval-Augmented Generation) allows the system to dynamically inject
+                relevant, high-quality peer support examples into the LLM’s context at inference time. This provides
+                up-to-date, context-aware guidance and avoids the limitations of static fine-tuning, which can struggle
+                to generalize or adapt to new topics and user needs. RAG also reduces hallucination and improves
+                factuality by grounding responses in real data.</p>
+            <ul>
+                <li><b>LLM Integration & Orchestration:</b> Modular backend supports both local and API-based LLMs
+                    (OpenAI, HuggingFace Transformers). LLMs are used for content generation, scoring, and safety
+                    filtering. The system is designed for easy swapping and fine-tuning of models for specific tasks.
+                </li>
+                <li><b>Retrieval-Augmented Generation (RAG) Pipeline:</b> User queries are embedded using Sentence
+                    Transformers (MiniLM, RoBERTa). Embeddings are stored and searched in ChromaDB, a high-performance
+                    vector database. Top-K relevant responses are retrieved and injected as context for LLM-based
+                    generation, enabling context-aware, high-recall outputs.</li>
+                <li><b>Why RAG over just fine-tuning?</b> RAG enables the system to dynamically inject relevant,
+                    high-quality peer support examples into the LLM's context at inference time. This provides
+                    up-to-date, context-aware guidance and avoids the limitations of static fine-tuning, which can
+                    struggle to generalize or adapt to new topics and user needs. RAG also reduces hallucination and
+                    improves factuality by grounding responses in real data.</li>
+                <li><b>Why ChromaDB?</b> ChromaDB was selected for its sub-millisecond retrieval speed, enabling
+                    real-time, low-latency semantic search crucial for user-facing applications. Through careful index
+                    tuning and hardware optimization, we reduced end-to-end retrieval latency by 65%, ensuring seamless
+                    user experience even at scale.</li>
+                <li><b>LLM Latency Optimization:</b> We optimized for low latency by combining sub-millisecond retrieval
+                    from ChromaDB with prompt engineering to keep LLM inputs concise and relevant. Where possible, we
+                    batch requests and use efficient model endpoints. These strategies, along with hardware and software
+                    optimizations, significantly reduce user-perceived wait times.</li>
+                <li><b>Prompt Engineering:</b> Dynamic prompt templates are constructed based on user intent (assessment
+                    vs. recommendation). Prompts include retrieved examples, safety instructions, and user context to
+                    guide LLM output and minimize hallucination.</li>
+                <li><b>Model Training & Fine-Tuning:</b> IS/ES classifiers are trained on annotated Reddit data using
+                    Random Forest, XGBoost, and fine-tuned RoBERTa. LLMs are further fine-tuned on domain-specific
+                    support conversations, with custom heads for regression/classification. Evaluation includes
+                    cross-validation, F1/accuracy metrics, and human-in-the-loop validation.</li>
+                <li><b>Active Learning Loop:</b> User interactions are logged and periodically used to retrain models,
+                    improving performance and domain adaptation. The pipeline supports continuous deployment and model
+                    versioning.</li>
+                <li><b>Engineering Best Practices:</b> RESTful API endpoints (FastAPI), containerized deployment
+                    (Docker), robust monitoring/logging, and modular codebase for scalability and maintainability.</li>
+                <li><b>Safety & Hallucination Filtering:</b> Safety is enforced through a multi-layered approach: all
+                    user inputs and LLM outputs are screened by both rule-based and LLM-based content filters. These
+                    filters block or flag harmful, unsafe, or privacy-violating content before it reaches the user. The
+                    system is regularly updated with new safety rules and leverages human-in-the-loop review for
+                    continuous improvement.</li>
+            </ul>
+            <p><b>Key components:</b> Flask frontend, FastAPI backend, ChromaDB vector search, LLM orchestration, safety
+                filtering, and active learning loop.</p>
         </section>
         <section id="features">
             <h2>Features & Technology Stack</h2>
             <ul>
-                <li><b>Retrieval-Augmented Generation (RAG):</b> Combines semantic search (ChromaDB) with LLMs for context-aware response generation.</li>
-                <li><b>Prompt Engineering:</b> Dynamic prompt templates for LLMs, including context injection and safety instructions.</li>
-                <li><b>Fine-Tuning:</b> Domain-specific adaptation of open-source models (RoBERTa, MiniLM) for IS/ES scoring and recommendation.</li>
-                <li><b>Safety & Hallucination Filtering:</b> LLM-based and rule-based content filters for trustworthy outputs.</li>
+                <li><b>Retrieval-Augmented Generation (RAG):</b> Combines semantic search (ChromaDB) with LLMs for
+                    context-aware response generation.</li>
+                <li><b>Prompt Engineering:</b> Dynamic prompt templates for LLMs, including context injection and safety
+                    instructions.</li>
+                <li><b>Fine-Tuning:</b> Domain-specific adaptation of open-source models (RoBERTa, MiniLM) for IS/ES
+                    scoring and recommendation.</li>
+                <li><b>Safety & Hallucination Filtering:</b> LLM-based and rule-based content filters for trustworthy
+                    outputs.</li>
                 <li><b>Active Learning:</b> User feedback loop for continuous model improvement.</li>
             </ul>
             <h3>Technology Stack</h3>
@@ -80,7 +131,9 @@
             </ul>
             <h3>Model Benchmarking (Validation Set)</h3>
             <p>
-                We evaluated multiple machine learning models for Informational Support (IS) and Emotional Support (ES) classification. The table below summarizes accuracy (Acc), precision (Prec), recall (Rec), and F1 score for each model:
+                We evaluated multiple machine learning models for Informational Support (IS) and Emotional Support (ES)
+                classification. The table below summarizes accuracy (Acc), precision (Prec), recall (Rec), and F1 score
+                for each model:
             </p>
             <table style="width:100%;border-collapse:collapse;text-align:center;">
                 <tr style="background:#f0f0f0;">
@@ -96,23 +149,47 @@
                 </tr>
                 <tr>
                     <td>Random Forest</td>
-                    <td>0.50</td><td>0.47</td><td>0.50</td><td>0.46</td>
-                    <td>0.57</td><td>0.47</td><td>0.57</td><td>0.49</td>
+                    <td>0.50</td>
+                    <td>0.47</td>
+                    <td>0.50</td>
+                    <td>0.46</td>
+                    <td>0.57</td>
+                    <td>0.47</td>
+                    <td>0.57</td>
+                    <td>0.49</td>
                 </tr>
                 <tr>
                     <td>XGBoost</td>
-                    <td>0.51</td><td>0.50</td><td>0.51</td><td>0.51</td>
-                    <td>0.58</td><td>0.53</td><td>0.58</td><td>0.54</td>
+                    <td>0.51</td>
+                    <td>0.50</td>
+                    <td>0.51</td>
+                    <td>0.51</td>
+                    <td>0.58</td>
+                    <td>0.53</td>
+                    <td>0.58</td>
+                    <td>0.54</td>
                 </tr>
                 <tr>
                     <td>Logistic Regression</td>
-                    <td>0.50</td><td>0.50</td><td>0.50</td><td>0.50</td>
-                    <td>0.54</td><td>0.52</td><td>0.54</td><td>0.53</td>
+                    <td>0.50</td>
+                    <td>0.50</td>
+                    <td>0.50</td>
+                    <td>0.50</td>
+                    <td>0.54</td>
+                    <td>0.52</td>
+                    <td>0.54</td>
+                    <td>0.53</td>
                 </tr>
                 <tr>
                     <td>SVM</td>
-                    <td>0.49</td><td>0.24</td><td>0.49</td><td>0.32</td>
-                    <td>0.51</td><td>0.26</td><td>0.51</td><td>0.35</td>
+                    <td>0.49</td>
+                    <td>0.24</td>
+                    <td>0.49</td>
+                    <td>0.32</td>
+                    <td>0.51</td>
+                    <td>0.26</td>
+                    <td>0.51</td>
+                    <td>0.35</td>
                 </tr>
             </table>
             <p style="font-size:0.95em;color:#555;margin-top:0.5em;">
@@ -121,12 +198,16 @@
         </section>
         <section id="contact">
             <h2>Contact / About</h2>
-            <p>Project by [Your Name]. For more information, please contact: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+            <p>Project by [Your Name]. For more information, please contact: <a
+                    href="mailto:your.email@example.com">your.email@example.com</a></p>
         </section>
+        <section id="faq">
+            <!-- FAQ section removed; content integrated into Technical Details -->
     </main>
     <footer>
         <p>&copy; 2025 BepsBot Project</p>
     </footer>
     <script src="main.js"></script>
 </body>
+
 </html>
